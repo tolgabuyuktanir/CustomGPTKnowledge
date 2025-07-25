@@ -1,0 +1,6 @@
+hydra-core
+pypdf
+tiktoken
+pytesseract
+pdf2image
+Pillow

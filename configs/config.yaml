@@ -1,0 +1,6 @@
+source_directory: "source_pdfs"
+output_directory: "outputs/merged_pdfs"
+report_path: "outputs/report.json"
+max_tokens_per_file: 2000000
+tiktoken_model: "gpt-4"
+use_ocr: true

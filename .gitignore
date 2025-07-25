@@ -1,3 +1,13 @@
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Generated output
+outputs/
+merged_pdfs/
+report.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
