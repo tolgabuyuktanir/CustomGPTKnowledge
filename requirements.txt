@@ -4,3 +4,7 @@ tiktoken
 pytesseract
 pdf2image
 Pillow
+reportlab
+EbookLib
+beautifulsoup4
+pytesseract

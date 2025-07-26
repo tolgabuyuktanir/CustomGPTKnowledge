@@ -6,6 +6,7 @@ __pycache__/
 # Generated output
 outputs/
 merged_pdfs/
+source_pdfs/
 report.json
 
 # Byte-compiled / optimized / DLL files
