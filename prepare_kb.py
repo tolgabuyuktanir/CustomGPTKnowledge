@@ -97,7 +97,9 @@ def extract_text_from_file(file_path: str, cfg: AppConfig) -> str:
             if cfg.tesseract_cmd:
                 pytesseract.pytesseract.tesseract_cmd = cfg.tesseract_cmd
             logging.info(f"Performing OCR on {os.path.basename(file_path)}...")
-            images = convert_from_path(file_path, dpi=300, poppler_path="/opt/homebrew/opt/poppler/bin")
+            images = convert_from_path(file_path, poppler_path="/opt/homebrew/opt/poppler/bin", fmt='jpg')
+            # convert images to grayscale for better OCR results
+            print("Converting PDF to images for OCR...")
             text = "".join(pytesseract.image_to_string(img) for img in images)
     except Exception as e:
         logging.error(f"Error extracting text from {file_path}: {e}")
@@ -215,6 +217,11 @@ def prepare_knowledge_base(cfg: AppConfig):
             reader = PdfReader(file_path)
         else:
             # For non-native files, convert the entire text to a temporary PDF
+            if file_path.lower().endswith('.pdf') and not cfg.use_ocr:
+                report["skipped_files"].append({"file": filename, "reason": "Scanned PDF found but OCR is disabled"})
+                logging.warning(f"Skipping scanned PDF {filename} because use_ocr is false.")
+                continue
+
             text = extract_text_from_file(file_path, cfg)
             if not text.strip():
                 report["skipped_files"].append({"file": filename, "reason": "No text extracted or file is unreadable"})

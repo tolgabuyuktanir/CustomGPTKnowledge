@@ -2,7 +2,7 @@
 
 # --- Directory Settings ---
 # Paths for input, output, and the final report.
-source_directory: "source_pdfs" # You can put any supported file type here
+source_directory: "source_pdfs/scanned_files" # You can put any supported file type here
 output_directory: "outputs/knowledge_base"
 report_path: "outputs/report.json"
 
@@ -22,8 +22,8 @@ max_file_size_mb: 512
 
 # --- Model and Feature Toggles ---
 # Specify the model for tokenization and enable/disable OCR processing for PDFs.
-tiktoken_model: "gpt-4"
-use_ocr: true
+tiktoken_model: "gpt-4o"
+use_ocr: false
 
 
 # --- Optional External Tool Paths ---
