@@ -1,35 +1,31 @@
-# Custom GPT Knowledge Base Preparation Tool
+# Knowledge Base Builder Web App
 
-This project provides a flexible Python script for processing various document types (`.pdf`, `.epub`, `.docx`, `.txt`) and consolidating them into a structured knowledge base suitable for training custom GPT models.
+This project provides a full-stack web application for processing documents and creating a structured knowledge base suitable for custom GPTs and RAG systems. It features a user-friendly **React frontend** and a powerful **Python Flask backend** that handles file processing, OCR, and real-time progress updates.
 
-The script intelligently handles large files, performs OCR on scanned documents, and uses a streaming and batching algorithm to pack the final output PDFs efficiently—respecting configurable token and file size limits.
-
----
-
-## ✨ Key Features
-
-- **Multi‑Format Support:** Handles PDFs, EPUBs, DOCX, and TXT files.  
-- **Intelligent PDF Handling:** Automatically distinguishes between text‑based and scanned (image‑based) PDFs.  
-- **OCR for Scanned Documents:** Integrates Tesseract‑OCR to extract text from scanned PDFs, making them searchable.  
-- **Advanced Streaming & Batching:** Streams pages continuously and splits outputs right at the token limit. A single source file can be split across multiple output batches.  
-- **Dynamic File Splitting:**
-  - **Native PDFs:** Split by page while preserving layout.
-  - **Other Formats:** Split by token count.  
-- **Configurable Limits:** Control max token counts and file sizes via YAML config.  
-- **Detailed Reporting:** Generates `report.json` summarizing processed files, token counts, and file sizes.  
-- **Configuration‑Driven:** Uses Hydra for easy overrides through `config.yaml` or the command line.
+The application allows users to upload multiple documents (`.pdf`, `.epub`, `.docx`, `.txt`), configure processing parameters such as token limits, and receive live feedback as their files are processed.
 
 ---
 
-## ⚙️ Prerequisites
+## ✨ Features
 
-Install these before running:
+- **Interactive Web Interface:** A clean, modern UI built with React for easy configuration and file management.  
+- **Drag-and-Drop File Uploads:** A simple and intuitive way to add multiple documents for processing.  
+- **Real-Time Progress Tracking:** The frontend receives live updates from the server, showing which file is being processed and the current task (e.g., “Performing OCR…”).  
+- **Full Backend Power:** Utilizes the robust Python script for multi-format support, intelligent PDF handling, OCR, and memory-efficient streaming.  
+- **Concurrent Request Handling:** The backend creates unique sessions for each request, ensuring that multiple users can use the application simultaneously without conflicts.
 
-1. **Python 3.8+**
-2. **Tesseract‑OCR** (for OCR):
-   - [Installation guide](https://github.com/tesseract-ocr/tesseract)
-   - Ensure `tesseract` is in your PATH.
-3. **Poppler** (required by `pdf2image`):
+---
+
+## ⚙️ System Prerequisites
+
+Before you begin, ensure you have the following installed on your system:
+
+1. **Node.js and npm** — v16 or higher recommended (for the React frontend)  
+2. **Python 3.8+** — for the Flask backend  
+3. **Tesseract-OCR** — required for the OCR feature  
+   - [Official Installation Guide](https://github.com/tesseract-ocr/tesseract)  
+   - Ensure the `tesseract` command is available in your system's PATH.  
+4. **Poppler** — a PDF rendering library required for PDF processing  
    - **macOS (Homebrew):**
      ```bash
      brew install poppler
@@ -38,129 +34,93 @@ Install these before running:
      ```bash
      sudo apt-get install poppler-utils
      ```
-   - **Windows:** [Download Poppler](https://github.com/oschwartz10612/poppler-windows/releases/) and add its `bin/` folder to PATH.
+   - **Windows:**  
+     Download the [latest release](https://github.com/oschwartz10612/poppler-windows/releases/)  
+     and add its `bin/` folder to your system's PATH.
 
 ---
 
-## 🚀 Setup
+## 🚀 Setup Instructions
 
-Clone the repository and install dependencies:
+The setup process is divided into two parts: **Backend** and **Frontend**.
+
+### 1. Backend Setup (Python)
+
+Set up the Python environment and install the required dependencies.
 
 ```bash
-git clone <your-repository-url>
-cd pdf-knowledge-base
+# Navigate to the backend directory
+cd backend
 
+# Create and activate a Python virtual environment
 python3 -m venv venv
-source venv/bin/activate     # On Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-**`requirements.txt` contents:**
-```
-hydra-core
-pypdf
-tiktoken
-pytesseract
-pdf2image
-Pillow
-python-docx
-EbookLib
-beautifulsoup4
-reportlab
-```
-
 ---
 
-## 📄 Configuration
+### 2. Frontend Setup (React)
 
-Edit `configs/config.yaml` to suit your needs:
+Next, set up the React application.
 
-```yaml
-# Directory Settings
-source_directory: "source_pdfs"
-output_directory: "outputs/knowledge_base_pdf"
-report_path: "outputs/report.json"
-
-# File Types to Process
-file_types:
-  - ".pdf"
-  - ".epub"
-  - ".docx"
-  - ".txt"
-
-# Processing Limits
-max_tokens_per_file: 2000000
-max_file_size_mb: 512
-
-# Model and Feature Toggles
-tiktoken_model: "gpt-4"
-use_ocr: true
-
-# External Tool Paths (optional)
-poppler_path: null
-tesseract_cmd: null
-```
-
-**Key fields:**
-
-| Field | Purpose |
-|-------|---------|
-| `source_directory` | Input folder containing your documents |
-| `output_directory` | Where final PDFs are saved |
-| `report_path` | Path to the JSON report |
-| `max_tokens_per_file` | Max tokens per output PDF |
-| `max_file_size_mb` | Max size per source file |
-| `use_ocr` | Enable or disable OCR |
-| `poppler_path` | Absolute path if Poppler isn’t in PATH |
-| `tesseract_cmd` | Absolute path if Tesseract isn’t in PATH |
-
----
-
-## ▶️ Usage
-
-1. Place your documents in `source_directory` (e.g., `source_pdfs/`).
-2. Run the script:
-   ```bash
-   python prepare_kb.py
-   ```
-
-**Override settings on the fly:**
 ```bash
-# Change token limit and disable OCR
-python prepare_kb.py max_tokens_per_file=1500000 use_ocr=false
+# Navigate to the frontend directory
+cd frontend
 
-# Set Poppler and Tesseract paths
-python prepare_kb.py poppler_path=/opt/homebrew/bin tesseract_cmd=/opt/homebrew/bin/tesseract
+# Install dependencies
+npm install
 ```
+
+---
+
+## ▶️ How to Run the Application
+
+You’ll need to start both the **backend** and **frontend** in separate terminals.
+
+### 🖥️ Terminal 1: Start the Backend Server
+
+```bash
+cd backend
+source venv/bin/activate  # (Activate environment if not already)
+python server.py
+```
+
+The backend server will start and listen on [http://127.0.0.1:5001](http://127.0.0.1:5001).
+
+---
+
+### 🌐 Terminal 2: Start the Frontend App
+
+```bash
+cd frontend
+npm start
+```
+
+The React app will automatically open in your browser at [http://localhost:3000](http://localhost:3000).
+
+---
+
+## 📖 How to Use the Web App
+
+1. **Open the Web Page:** Go to [http://localhost:3000](http://localhost:3000) in your browser.  
+2. **Configure Settings:** Adjust parameters such as token limits and OCR options in the “Configuration” section.  
+3. **Upload Files:** Drag and drop your documents, or click to select them manually.  
+4. **Start Processing:** Click **Build Knowledge Base** to begin.  
+5. **Monitor Progress:** Watch live updates showing the current file, step, and OCR activity.  
+6. **Download Results:** Once completed, use **Download All** or individual links to retrieve processed PDFs.  
+   The final **JSON report** will also be displayed.
 
 ---
 
 ## 🔧 How It Works
 
-1. **Scan & Identify:** Finds files matching extensions in `file_types`.
-2. **Process & Convert:**  
-   - PDFs are read page by page.  
-   - EPUB/DOCX/TXT or scanned PDFs are converted to searchable PDFs (via OCR if needed).  
-3. **Batching:** Adds pages one by one to output until hitting token limit.  
-4. **Split & Save:** Finalizes each batch before starting the next.  
-5. **Clean Up:** Temporary converted PDFs are removed.  
-6. **Report:** Generates a `report.json` with details of all processed files.
+1. The **React frontend** provides the interface for configuration, file uploads, and progress visualization.  
+2. When you start processing, the frontend sends files and settings to the **Flask backend**.  
+3. The backend creates a **unique session** for each user and launches the core processing script.  
+4. A **Server-Sent Events (SSE)** connection streams real-time progress logs from the backend to the UI.  
+5. After processing, the backend sends the final **download links** and a **JSON summary report** to the frontend.
 
 ---
-
-## 📂 Project Structure
-
-```
-pdf-knowledge-base/
-├── configs/
-│   └── config.yaml
-├── source_pdfs/
-│   ├── document_a.pdf
-│   └── ...
-├── prepare_kb.py
-├── requirements.txt
-└── README.md
-```
-
-Outputs will be created under `outputs/`, including your merged PDFs and `report.json`.
