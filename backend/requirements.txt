@@ -1,0 +1,11 @@
+hydra-core
+pypdf
+tiktoken
+pytesseract
+pdf2image
+Pillow
+reportlab
+EbookLib
+beautifulsoup4
+Flask
+Flask-Cors
